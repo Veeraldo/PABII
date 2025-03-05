@@ -22,4 +22,12 @@ Future<List<Map<String, dynamic>>> getPopularMovies() async {
   final data= json.decode(response.body);
     return List<Map<String, dynamic>>.from(data['results']);
 }
+
+Future<List<Map<String, dynamic>>> searchMovies(String query) async {
+  final response = await http.get(Uri.parse("$baseUrl/search/movie?query=$query&api_key=$apiKey"));
+  final data= json.decode(response.body);
+    return List<Map<String, dynamic>>.from(data['results']);
+}
+
+
 }
