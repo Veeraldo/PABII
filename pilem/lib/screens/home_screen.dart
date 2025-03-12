@@ -17,13 +17,17 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Movie> _popularMovies = [];
 
   Future<void> _loadMovies() async {
-    final List<Map<String, dynamic>> allMoviesData = await _apiServices.getAllMovies();
-    final List<Map<String, dynamic>> trendingMoviesData = await _apiServices.getTrendingMovies();
-    final List<Map<String, dynamic>> popularMoviesData = await _apiServices.getPopularMovies();
+    final List<Map<String, dynamic>> allMoviesData =
+        await _apiServices.getAllMovies();
+    final List<Map<String, dynamic>> trendingMoviesData =
+        await _apiServices.getTrendingMovies();
+    final List<Map<String, dynamic>> popularMoviesData =
+        await _apiServices.getPopularMovies();
 
     setState(() {
       _allMovies = allMoviesData.map((e) => Movie.fromJson(e)).toList();
-      _trendingMovies = trendingMoviesData.map((e) => Movie.fromJson(e)).toList();
+      _trendingMovies =
+          trendingMoviesData.map((e) => Movie.fromJson(e)).toList();
       _popularMovies = popularMoviesData.map((e) => Movie.fromJson(e)).toList();
     });
   }
@@ -72,10 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (BuildContext context, int index) {
               final Movie movie = movies[index];
               return GestureDetector(
-                onTap: ()=> Navigator.push(
+                onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DetailScreen(movie: movie)),
-                ) ,
+                  MaterialPageRoute(
+                      builder: (context) => DetailScreen(movie: movie)),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
