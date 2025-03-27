@@ -37,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
           height: 16,
         ),
         TextField(
-        controller: _emailcontroller,
+        controller: _passwordcontroller,
         decoration: const InputDecoration(
           labelText: 'Password',border: OutlineInputBorder()
         ),
