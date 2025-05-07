@@ -3,7 +3,7 @@ import 'package:nfc_manager/nfc_manager.dart';
 import 'package:intl/intl.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: NFCReaderScreen(),
     );
@@ -95,50 +95,50 @@ class _NFCReaderScreenState extends State<NFCReaderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("NFC Reader")),
+      appBar: AppBar(title: const Text("NFC Reader")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: _statusColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 _statusText,
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: const TextStyle(color: Colors.white, fontSize: 18),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             AnimatedContainer(
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
               width: 100,
               height: 100,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _isScanning ? Colors.orangeAccent : Colors.grey,
               ),
-              child: Icon(Icons.nfc, size: 50, color: Colors.white),
+              child: const Icon(Icons.nfc, size: 50, color: Colors.white),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             LinearProgressIndicator(
               value: _progressValue,
               minHeight: 8,
               backgroundColor: Colors.grey,
               color: _statusColor,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
+                  boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5)],
                 ),
                 child: ListView.builder(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   itemCount: _nfcIds.length,
                   itemBuilder: (context, index) {
                     String entry = _nfcIds[index];
@@ -151,20 +151,20 @@ class _NFCReaderScreenState extends State<NFCReaderScreen> {
 
                     return Card(
                       elevation: 3,
-                      margin: EdgeInsets.symmetric(vertical: 5),
+                      margin: const EdgeInsets.symmetric(vertical: 5),
                       child: ListTile(
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               timeStamp,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 5),
-                            Text(nfcId, style: TextStyle(fontSize: 16)),
+                            const SizedBox(height: 5),
+                            Text(nfcId, style: const TextStyle(fontSize: 16)),
                           ],
                         ),
                         // title: Text(_nfcIds[index], style: TextStyle(fontSize: 16)),
@@ -175,31 +175,31 @@ class _NFCReaderScreenState extends State<NFCReaderScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: _startNFCScan,
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Text("Mulai Scan", style: TextStyle(fontSize: 16, color: Colors.blue)),
+                  child: const Text("Mulai Scan", style: TextStyle(fontSize: 16, color: Colors.blue)),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: _stopNFCScan,
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     backgroundColor: Colors.redAccent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Text("Stop Scan", style: TextStyle(fontSize: 16, color: Colors.white)),
+                  child: const Text("Stop Scan", style: TextStyle(fontSize: 16, color: Colors.white)),
                 ),
               ],
             ),

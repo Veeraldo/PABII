@@ -56,11 +56,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         width: 50,
                         fit: BoxFit.cover,
                         placeholder: (context, url){
-                          return Center(
+                          return const Center(
                             child: CircularProgressIndicator(color: Colors.blue,),
                           );
                         },
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
                       ),
                       title: Text(movie.title),
                       onTap: () {

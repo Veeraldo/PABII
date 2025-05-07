@@ -25,7 +25,7 @@ class MainApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   Future <List<Karyawan>> _readJsonData() async {
     final String response = await rootBundle.loadString('assets/karyawan.json');

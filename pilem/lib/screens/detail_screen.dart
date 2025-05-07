@@ -57,7 +57,7 @@ class _DetailScreenState extends State<DetailScreen> {
       appBar: AppBar(
         title: Text(widget.movie.title),
       ),
-      body: Padding(padding: EdgeInsets.all(8.0),
+      body: Padding(padding: const EdgeInsets.all(8.0),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -70,11 +70,11 @@ class _DetailScreenState extends State<DetailScreen> {
                   height: 300,
                   fit: BoxFit.cover,
                   placeholder: (context, url){
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(color: Colors.blue,),
                     );
                   },
-                   errorWidget: (context, url, error) => Icon(Icons.error),
+                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 Positioned(
                   bottom: 8,
@@ -108,7 +108,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     "Release Date : ",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(widget.movie.releaseDate),
@@ -127,7 +127,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     "Rating : ",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Text(widget.movie.voteAverage.toString()),
