@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:http/http.dart' as http;
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
@@ -123,53 +123,69 @@ class _AddPostScreenState extends State<AddPostScreen> {
     if (_image == null) return;
     setState(() => _isGenerating = true);
     try {
-      final model = GenerativeModel(
-        model: 'gemini-1.5-pro',
-        apiKey: 'AIzaSyBg5rOoLc5VI_SdzI6D573ZhKNio3t-qLI',
-      );
-
       final imageBytes = await _image!.readAsBytes();
-      final content = Content.multi([
-        DataPart('image/jpeg', imageBytes),
-        TextPart(
-          'Berdasarkan foto ini, identifikasi satu kategori utama kerusakan fasilitas umum '
-          'dari daftar berikut: Jalan Rusak, Marka Pudar, Lampu Mati, Trotoar Rusak, '
-          'Rambu Rusak, Jembatan Rusak, Sampah Menumpuk, Saluran Tersumbat, Sungai Tercemar, '
-          'Sampah Sungai, Pohon Tumbang, Taman Rusak, Fasilitas Rusak, Pipa Bocor, '
-          'Vandalisme, Banjir, dan Lainnya. '
-          'Pilih kategori yang paling dominan atau paling mendesak untuk dilaporkan. '
-          'Buat deskripsi singkat untuk laporan perbaikan, dan tambahkan permohonan perbaikan. '
-          'Fokus pada kerusakan yang terlihat dan hindari spekulasi.\n\n'
-          'Format output yang diinginkan:\n'
-          'Kategori: [satu kategori yang dipilih]\n'
-          'Deskripsi: [deskripsi singkat]',
-        ),
-      ]);
-
-      final response = await model.generateContent([content]);
-      final aiText = response.text;
-      print("AI TEXT: $aiText");
-
-      if (aiText != null && aiText.isNotEmpty) {
-        final lines = aiText.trim().split('\n');
-        String? category;
-        String? description;
-        for (var line in lines) {
-          final lower = line.toLowerCase();
-          if (lower.startsWith('kategori:')) {
-            category = line.substring(9).trim();
-          } else if (lower.startsWith('deskripsi:')) {
-            description = line.substring(10).trim();
-          } else if (lower.startsWith('keterangan:')) {
-            description = line.substring(11).trim();
+      final base64Image = base64Encode(imageBytes);
+      const apiKey = 'AIzaSyBg5rOoLc5VI_SdzI6D573ZhKNio3t-qLI';
+      const url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=$apiKey';
+      final body = jsonEncode({
+        "contents": [
+          {
+            "parts": [
+              {
+                "inlineData": {"mimeType": "image/jpeg", "data": base64Image},
+              },
+              {
+                "text":
+                    "Berdasarkan foto ini, identifikasi satu kategori utama kerusakan fasilitas umum "
+                    "dari daftar berikut: Jalan Rusak, Marka Pudar, Lampu Mati, Trotoar Rusak, "
+                    "Rambu Rusak, Jembatan Rusak, Sampah Menumpuk, Saluran Tersumbat, Sungai Tercemar, "
+                    "Sampah Sungai, Pohon Tumbang, Taman Rusak, Fasilitas Rusak, Pipa Bocor, "
+                    "Vandalisme, Banjir, dan Lainnya. "
+                    "Pilih kategori yang paling dominan atau paling mendesak untuk dilaporkan. "
+                    "Buat deskripsi singkat untuk laporan perbaikan, dan tambahkan permohonan perbaikan. "
+                    "Fokus pada kerusakan yang terlihat dan hindari spekulasi.\n\n"
+                    "Format output yang diinginkan:\n"
+                    "Kategori: [satu kategori yang dipilih]\n"
+                    "Deskripsi: [deskripsi singkat]",
+              },
+            ],
+          },
+        ],
+      });
+      final headers = {'Content-Type': 'application/json'};
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+       if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        final text =
+            jsonResponse['candidates'][0]['content']['parts'][0]['text'];
+        print("AI TEXT: $text");
+        if (text != null && text.isNotEmpty) {
+          final lines = text.trim().split('\n');
+          String? category;
+          String? description;
+          for (var line in lines) {
+            final lower = line.toLowerCase();
+            if (lower.startsWith('kategori:')) {
+              category = line.substring(9).trim();
+            } else if (lower.startsWith('deskripsi:')) {
+              description = line.substring(10).trim();
+            } else if (lower.startsWith('keterangan:')) {
+              description = line.substring(11).trim();
+            }
           }
+          description ??= text.trim();
+          setState(() {
+            _aiCategory = category ?? 'Tidak diketahui';
+            _aiDescription = description!;
+            _descriptionController.text = _aiDescription!;
+          });
         }
-        description ??= aiText.trim();
-        setState(() {
-          _aiCategory = category ?? 'Tidak diketahui';
-          _aiDescription = description!;
-          _descriptionController.text = _aiDescription!;
-        });
+      } else {
+        debugPrint('Request failed: ${response.body}');
       }
     } catch (e) {
       debugPrint('Failed to generate AI description: $e');
@@ -177,6 +193,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       if (mounted) setState(() => _isGenerating = false);
     }
   }
+
 
   Future<void> _getLocation() async {
     try {
